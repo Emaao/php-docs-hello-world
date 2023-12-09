@@ -31,6 +31,7 @@ $room = $stmt->fetch(PDO::FETCH_ASSOC);
         <!-- Display the room image from Blob Storage -->
         <img src="<?php echo $room['imagePath']; ?>" alt="Room Image">
 
+
         <!-- Reserve button -->
         <?php
             if ($room['Availability'] == 1) {
@@ -43,6 +44,7 @@ $room = $stmt->fetch(PDO::FETCH_ASSOC);
 
     <!-- JavaScript function to handle room reservation -->
     <script>
+        // JavaScript function to handle room reservation
         function reserveRoom(RoomNumber) {
             // Make an AJAX request to update availability
             var xhttp = new XMLHttpRequest();
@@ -53,10 +55,11 @@ $room = $stmt->fetch(PDO::FETCH_ASSOC);
                     document.querySelector("button").disabled = true;
                 }
             };
-            xhttp.open("POST", "room_details.php?RoomNumber=" + RoomNumber, true);
+            xhttp.open("POST", "oneroom.php?RoomNumber=" + RoomNumber, true);
             xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
             xhttp.send("reserve=true");
         }
+
     </script>
 </body>
 
