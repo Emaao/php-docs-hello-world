@@ -1,5 +1,5 @@
 <?php
-include 'rooms.php'; // Include the database connection file
+include 'db.php'; // Include the database connection file
 
 $sql = "SELECT * FROM Salles";
 $result = $conn->query($sql);
@@ -22,31 +22,17 @@ $result = $conn->query($sql);
 
         <!-- PHP code to fetch and display rooms -->
         <?php
-
-
         while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
             echo '<div>';
             echo '<p>Room Number: ' . $row['RoomNumber'] . '</p>';
             echo '<p>Availability: ' . $row['Availability'] . '</p>';
 
-            // Display the room image from Blob Storage
-            echo '<img src="' . $row['imagePath'] . '" alt="Room Image">';
-
             // Add a link to view room details
-            echo '<a href="oneroom.php?RoomNumber=' . $row['RoomNumber'] . '">View Details</a>';
+            echo '<a href="room_details.php?RoomNumber=' . $row['RoomNumber'] . '">View Details</a>';
 
             echo '</div>';
         }
-
         ?>
-        
-        <!-- JavaScript function to handle room reservation -->
-        <script>
-            function reserveRoom(RoomNumber) {
-                // You can add logic here to handle the reservation process
-                alert('Room ' + RoomNumber + ' reserved!');
-            }
-        </script>
     </div>
 </body>
 
