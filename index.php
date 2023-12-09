@@ -28,7 +28,7 @@ $result = $conn->query($sql);
             echo '<p>Availability: ' . $row['Availability'] . '</p>';
 
             // Add a link to view room details
-            echo '<a href="room_details.php?RoomNumber=' . $row['RoomNumber'] . '">View Details</a>';
+            echo '<a href="oneroom.php?RoomNumber=' . $row['RoomNumber'] . '">View Details</a>';
 
             echo '</div>';
         }
