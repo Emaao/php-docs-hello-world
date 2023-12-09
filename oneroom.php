@@ -21,8 +21,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reserve'])) {
         $room = $stmt->fetch(PDO::FETCH_ASSOC);
         
         //Generate SAS for the image URl
-        $sasToken = generateSasToken($room['imagePath']);
-        
+        $sasToken = '?si=imanee&spr=https&sv=2022-11-02&sr=c&sig=zZGbqUZMIy3SuTjwwfVIkt996nMuPTppsZXGJp5VD0Q%3D';
+
         // Return updated availability as a JSON response
         header('Content-Type: application/json');
         echo json_encode(['availability' => $room['Availability']]);
@@ -73,28 +73,6 @@ $room = $stmt->fetch(PDO::FETCH_ASSOC);
 
     <!-- JavaScript function to handle room reservation -->
     <script>
-        //function to generate sas token for blob 
-        function generateSasToken($blobUrl)
-    {
-        $accountName = 'reservac'; // Replace with your storage account name
-        $accountKey = 'FFth1+WCTmbeujiIjwW6VnnPM8QowQ9UvJMcbI8Xn8X7oQ1yytzbOU2H+Qwvb4ipJgp5MrEN4mJc+AStF7w/XQ==';   // Replace with your storage account key
-        $containerName = 'blobcontainer';     // Replace with your container name
-
-        $expiry = time() + 3600;  // Set the expiry time (1 hour from now)
-        $stringToSign = utf8_encode(urlencode($blobUrl) . "\n" . $expiry);
-        $signature = base64_encode(hash_hmac('sha256', $stringToSign, base64_decode($accountKey), true));
-
-        $sasToken = sprintf(
-            '?sv=%s&se=%s&sr=%s&sp=%s&sig=%s',
-            '2019-12-12',       // Storage service version
-            $expiry,            // Expiry time
-            'b',                // Signed resource: blob
-            'r',                // Signed permissions: read
-            rawurlencode($signature)
-        );
-
-        return $sasToken;
-    }
         // JavaScript function to handle room reservation
         function reserveRoom(RoomNumber) {
             // Make an AJAX request to update availability
