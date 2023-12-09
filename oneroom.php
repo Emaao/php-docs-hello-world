@@ -61,7 +61,7 @@ $room = $stmt->fetch(PDO::FETCH_ASSOC);
         <p>Availability: <span id="availability"><?php echo $room['Availability']; ?></span></p>
 
         <!-- Display the room image from Blob Storage -->
-        <img src="<?php echo $room['imagePath'] . $sasToken; ?>" alt="Room Image">
+        <img src="<?php echo $room['imagePath'] , $sasToken; ?>" alt="Room Image">
 
         <!-- Reserve button and form -->
         <form id="reserveForm">
