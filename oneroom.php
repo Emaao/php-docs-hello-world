@@ -22,6 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reserve'])) {
         
         //Generate SAS for the image URl
         $sasToken = generateSasToken($room['imagePath']);
+        
         // Return updated availability as a JSON response
         header('Content-Type: application/json');
         echo json_encode(['availability' => $room['Availability']]);
