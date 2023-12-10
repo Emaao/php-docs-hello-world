@@ -51,7 +51,7 @@
     }
     ?>
 
-    <form action="process_login.php" method="post">
+    <form  method="post">
         <h2>Connexion</h2>
         <label for="username">Nom d'utilisateur :</label>
         <input type="text" id="username" name="username" required>
