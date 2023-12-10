@@ -8,7 +8,7 @@ $roomNumber = $_GET['RoomNumber'];
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reserve'])) {
     try {
         // Fetch idReservation from the database based on idUser and RoomNumber
-        $sqlFetchIdReservation = "SELECT idResa FROM Resa WHERE idUser = :idUser AND idRoom = :roomNumber";
+        $sqlFetchIdReservation = "SELECT idResa FROM Resa WHERE idUser = :idUser AND RoomNumber = :roomNumber";
         $stmtFetchIdReservation = $conn->prepare($sqlFetchIdReservation);
         $stmtFetchIdReservation->bindParam(':idUser', $_SESSION['userId']); // Assuming you have a session variable for userId
         $stmtFetchIdReservation->bindParam(':roomNumber', $roomNumber);
@@ -68,14 +68,12 @@ $room = $stmt->fetch(PDO::FETCH_ASSOC);
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Room Details</title>
     <link rel="stylesheet" href="body.css">
 </head>
-
 <body>
     <div>
         <h1>Room Details</h1>
@@ -86,11 +84,17 @@ $room = $stmt->fetch(PDO::FETCH_ASSOC);
         <img src="<?php echo $room['imagePath'] . '?si=imanee&spr=https&sv=2022-11-02&sr=c&sig=zZGbqUZMIy3SuTjwwfVIkt996nMuPTppsZXGJp5VD0Q%3D'; ?>" alt="Room Image">
 
         <!-- Reserve button and form -->
-        <form id="reserveForm">
-            <button type="button" onclick="reserveRoom(<?php echo $room['RoomNumber']; ?>)">
-                Reserve Room
-            </button>
+        <form id="reserveForm" method="post" onsubmit="reserveRoom(<?php echo $room['RoomNumber']; ?>)">
+            <?php
+            // Check if the room is available and user is not an admin
+                if ($room['Availability'] == 1 && $_SESSION['isAdmin'] != 1) {
+                    echo '<button type="submit" name="reserve">Reserve Room</button>';
+                } else {
+                    echo '<button type="button" disabled>Room Reserved</button>';
+                }
+            ?>
         </form>
+
     </div>
 
     <!-- JavaScript function to handle room reservation -->
@@ -141,7 +145,5 @@ $room = $stmt->fetch(PDO::FETCH_ASSOC);
             xhttp.send(JSON.stringify({ roomNumber: RoomNumber, idReservation: idReservation }));
         }
     </script>
-
 </body>
-
 </html>
