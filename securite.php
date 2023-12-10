@@ -5,7 +5,7 @@
 // Check if the user is an admin
 if ($isAdmin) {
     // Connect to your Azure Storage Queue
-    $connectionString = "DefaultEndpointsProtocol=https;AccountName=reservac;AccountKey=FFth1+WCTmbeujiIjwW6VnnPM8QowQ9UvJMcbI8Xn8X7oQ1yytzbOU2H+Qwvb4ipJgp5MrEN4mJc+AStF7w/XQ==;EndpointSuffix=core.windows.net";
+    $connectionString = "DefaultEndpointsProtocol=https;AccountName=<YourAccountName>;AccountKey=<YourAccountKey>;EndpointSuffix=core.windows.net";
     $queueName = "queue";
     
     try {
