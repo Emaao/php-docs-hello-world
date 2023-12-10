@@ -30,7 +30,7 @@
 
             if ($user) {
                 $_SESSION['isAdmin'] = 1;
-                header("Location: admin.php");
+                header("Location: AdminInterface.php");
                 exit();
             } else {
                 // Invalid credentials
