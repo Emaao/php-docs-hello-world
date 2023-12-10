@@ -8,8 +8,9 @@ $roomNumber = $_GET['RoomNumber'];
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reserve'])) {
     try {
         // Fetch idReservation from the database based on idUser and RoomNumber
-        $sqlFetchIdReservation = "SELECT idResa FROM Resa WHERE idUser = :idUser AND RoomNumber = :roomNumber";
+        $sqlFetchIdReservation = "SELECT idResa FROM Resa WHERE idUser = :idUser AND idRoom = :roomNumber";
         $stmtFetchIdReservation = $conn->prepare($sqlFetchIdReservation);
+        $stmtFetchIdReservation->bindParam(':idUser', $_SESSION['userId']); // Assuming you have a session variable for userId
         $stmtFetchIdReservation->bindParam(':roomNumber', $roomNumber);
         $stmtFetchIdReservation->execute();
         $reservation = $stmtFetchIdReservation->fetch(PDO::FETCH_ASSOC);
@@ -44,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reserve'])) {
 
         // Data to be sent in the POST request
         $data = array(
-            'RoomNumber' => '',
+            'RoomNumber' => $roomNumber,
             'idResa' => $reservation['idResa'] // Send the fetched idResa value
         );
 
@@ -57,16 +58,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reserve'])) {
         exit();
     }
 }
-
-
-        // Fetch room details from the database
-        $sql = "SELECT * FROM Salles WHERE RoomNumber = :roomNumber";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':roomNumber', $roomNumber);
-        $stmt->execute();
-        $room = $stmt->fetch(PDO::FETCH_ASSOC);
-        ?>
-
+// Fetch room details from the database
+$sql = "SELECT * FROM Salles WHERE RoomNumber = :roomNumber";
+$stmt = $conn->prepare($sql);
+$stmt->bindParam(':roomNumber', $roomNumber);
+$stmt->execute();
+$room = $stmt->fetch(PDO::FETCH_ASSOC);
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -96,53 +94,53 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reserve'])) {
     </div>
 
     <!-- JavaScript function to handle room reservation -->
-<script>
-    // JavaScript function to handle room reservation
-    function reserveRoom(RoomNumber) {
-        // Make an AJAX request to update availability
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function () {
-            if (this.readyState == 4) {
-                if (this.status == 200) {
-                    // Update the button text and disable the button
-                    document.querySelector("button").innerText = "Room Reserved";
-                    document.querySelector("button").disabled = true;
+    <script>
+        // JavaScript function to handle room reservation
+        function reserveRoom(RoomNumber) {
+            // Make an AJAX request to update availability
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4) {
+                    if (this.status == 200) {
+                        // Update the button text and disable the button
+                        document.querySelector("button").innerText = "Room Reserved";
+                        document.querySelector("button").disabled = true;
 
-                    // Update the availability in the page
-                    document.getElementById("availability").innerText = "0";
+                        // Update the availability in the page
+                        document.getElementById("availability").innerText = "0";
 
-                    // Get idReservation from the response
-                    var response = JSON.parse(this.responseText);
-                    var idReservation = response.idResa;
+                        // Get idReservation from the response
+                        var response = JSON.parse(this.responseText);
+                        var idReservation = response.idResa;
 
-                    // Call serverless function with roomNumber and idReservation
-                    callServerlessFunction(RoomNumber, idReservation);
-                } else {
-                    // Log an error if the request is not successful
-                    console.error("Error updating availability");
+                        // Call serverless function with roomNumber and idReservation
+                        callServerlessFunction(RoomNumber, idReservation);
+                    } else {
+                        // Log an error if the request is not successful
+                        console.error("Error updating availability");
+                    }
                 }
-            }
-        };
-        xhttp.open("POST", "oneroom.php?RoomNumber=" + RoomNumber, true);
-        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhttp.send("reserve=true");
-    }
+            };
+            xhttp.open("POST", "oneroom.php?RoomNumber=" + RoomNumber, true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.send("reserve=true");
+        }
 
-    // JavaScript function to call the serverless function
-    function callServerlessFunction(RoomNumber, idReservation) {
-        // Make an AJAX request to the serverless function
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                // Log the serverless function response
-                console.log("Serverless function response:", this.responseText);
-            }
-        };
-        xhttp.open("POST", "https://securitee.azurewebsites.net/api/srvFunction?code=ma9q8GqIgDniQSR31BqVCUtQqkaF_JyaD7KxON7enzwJAzFuANgDxQ==", true); // Replace with the actual URL of your serverless function
-        xhttp.setRequestHeader("Content-type", "application/json");
-        xhttp.send(JSON.stringify({ roomNumber: RoomNumber, idReservation: idReservation }));
-    }
-</script>
+        // JavaScript function to call the serverless function
+        function callServerlessFunction(RoomNumber, idReservation) {
+            // Make an AJAX request to the serverless function
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    // Log the serverless function response
+                    console.log("Serverless function response:", this.responseText);
+                }
+            };
+            xhttp.open("POST", "https://securitee.azurewebsites.net/api/srvFunction?code=ma9q8GqIgDniQSR31BqVCUtQqkaF_JyaD7KxON7enzwJAzFuANgDxQ==", true); // Replace with the actual URL of your serverless function
+            xhttp.setRequestHeader("Content-type", "application/json");
+            xhttp.send(JSON.stringify({ roomNumber: RoomNumber, idReservation: idReservation }));
+        }
+    </script>
 
 </body>
 

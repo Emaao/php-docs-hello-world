@@ -1,4 +1,4 @@
-<?php
+<?php 
 session_start();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -8,17 +8,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'];
 
     try {
-        // Check if the user exists and get isAdmin value
-        $sql = "SELECT isAdmin FROM _user WHERE NameUser = :username AND pass = :password";
+        // Check if the user exists and get isAdmin and userId values
+        $sql = "SELECT isAdmin, idUser FROM _user WHERE NameUser = :username AND pass = :password";
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':username', $username);
         $stmt->bindParam(':password', $password);
         $stmt->execute();
-        $isAdmin = $stmt->fetchColumn();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($isAdmin !== false) {
-            $_SESSION['isAdmin'] = $isAdmin;
-            if ($isAdmin == 1) {
+        if ($user) {
+            $_SESSION['isAdmin'] = $user['isAdmin'];
+            $_SESSION['userId'] = $user['idUser']; // Store the user ID in the session
+
+            if ($user['isAdmin'] == 1) {
                 // Admin user, redirect to AdminInterface.php
                 header("Location: AdminInterface.php");
                 exit();
