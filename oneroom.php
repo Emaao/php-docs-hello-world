@@ -2,7 +2,6 @@
 include 'rooms.php';
 error_log("oneroom.php script started"); // Log to the server error log
 
-
 // Get RoomNumber from the query parameters
 $roomNumber = $_GET['RoomNumber'];
 
@@ -10,7 +9,7 @@ $roomNumber = $_GET['RoomNumber'];
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reserve'])) {
     try {
         // Fetch idReservation from the database based on idUser and RoomNumber
-        $sqlFetchIdReservation = "SELECT idResa FROM Resa WHERE idUser = :idUser AND RoomNumber = :roomNumber";
+        $sqlFetchIdReservation = "SELECT idResa FROM Resa WHERE idUser = :idUser AND idRoom = :roomNumber";
         $stmtFetchIdReservation = $conn->prepare($sqlFetchIdReservation);
         $stmtFetchIdReservation->bindParam(':idUser', $_SESSION['userId']); // Assuming you have a session variable for userId
         $stmtFetchIdReservation->bindParam(':roomNumber', $roomNumber);
@@ -60,6 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reserve'])) {
         exit();
     }
 }
+
 // Fetch room details from the database
 $sql = "SELECT * FROM Salles WHERE RoomNumber = :roomNumber";
 $stmt = $conn->prepare($sql);
