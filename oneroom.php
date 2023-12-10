@@ -7,12 +7,20 @@ $roomNumber = $_GET['RoomNumber'];
 // Check if the form is submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reserve'])) {
     try {
-        // Fetch idReservation from the database
-        $sqlFetchIdReservation = "SELECT idResa FROM Resa WHERE RoomNumber = :roomNumber";
+        // Fetch idReservation from the database based on idUser and RoomNumber
+        $sqlFetchIdReservation = "SELECT idResa FROM Resa WHERE idUser = :idUser AND RoomNumber = :roomNumber";
         $stmtFetchIdReservation = $conn->prepare($sqlFetchIdReservation);
         $stmtFetchIdReservation->bindParam(':roomNumber', $roomNumber);
         $stmtFetchIdReservation->execute();
         $reservation = $stmtFetchIdReservation->fetch(PDO::FETCH_ASSOC);
+
+        // Check if idReservation is found
+        if (!$reservation) {
+            // Handle the case where no reservation is found
+            http_response_code(404);
+            echo json_encode(['error' => 'Reservation not found']);
+            exit();
+        }
 
         // Update the availability in the database
         $sqlUpdate = "UPDATE Salles SET Availability = 0 WHERE RoomNumber = :roomNumber";
@@ -30,7 +38,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reserve'])) {
         // Return updated availability and idReservation as a JSON response
         header('Content-Type: application/json');
         echo json_encode(['Availability' => $room['Availability'], 'idResa' => $reservation['idResa']]);
-        exit();
+
+        // URL to which the POST request will be sent
+        $url = 'https://securitee.azurewebsites.net/api/srvFunction?code=ma9q8GqIgDniQSR31BqVCUtQqkaF_JyaD7KxON7enzwJAzFuANgDxQ==';
+
+        // Data to be sent in the POST request
+        $data = array(
+            'RoomNumber' => '',
+            'idResa' => $reservation['idResa'] // Send the fetched idResa value
+        );
+
+        // ... (rest of the cURL code remains unchanged)
     } catch (PDOException $e) {
         // Log the error
         error_log("Error updating availability: " . $e->getMessage());
@@ -40,13 +58,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reserve'])) {
     }
 }
 
-// Fetch room details from the database
-$sql = "SELECT * FROM Salles WHERE RoomNumber = :roomNumber";
-$stmt = $conn->prepare($sql);
-$stmt->bindParam(':roomNumber', $roomNumber);
-$stmt->execute();
-$room = $stmt->fetch(PDO::FETCH_ASSOC);
-?>
+
+        // Fetch room details from the database
+        $sql = "SELECT * FROM Salles WHERE RoomNumber = :roomNumber";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':roomNumber', $roomNumber);
+        $stmt->execute();
+        $room = $stmt->fetch(PDO::FETCH_ASSOC);
+        ?>
 
 
 <!DOCTYPE html>
@@ -119,7 +138,7 @@ $room = $stmt->fetch(PDO::FETCH_ASSOC);
                 console.log("Serverless function response:", this.responseText);
             }
         };
-        xhttp.open("POST", "YOUR_SERVERLESS_FUNCTION_URL", true); // Replace with the actual URL of your serverless function
+        xhttp.open("POST", "https://securitee.azurewebsites.net/api/srvFunction?code=ma9q8GqIgDniQSR31BqVCUtQqkaF_JyaD7KxON7enzwJAzFuANgDxQ==", true); // Replace with the actual URL of your serverless function
         xhttp.setRequestHeader("Content-type", "application/json");
         xhttp.send(JSON.stringify({ roomNumber: RoomNumber, idReservation: idReservation }));
     }
