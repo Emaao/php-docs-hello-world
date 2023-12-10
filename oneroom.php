@@ -1,5 +1,7 @@
 <?php
 include 'rooms.php';
+error_log("oneroom.php script started"); // Log to the server error log
+
 
 // Get RoomNumber from the query parameters
 $roomNumber = $_GET['RoomNumber'];
