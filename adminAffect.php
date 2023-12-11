@@ -1,5 +1,6 @@
 <?php
 session_start();
+include 'db.php';
 
 error_log("adminAffect.php script started");
 
