@@ -145,6 +145,8 @@ $room = $stmt->fetch(PDO::FETCH_ASSOC);
                 if (this.readyState == 4 && this.status == 200) {
                     // Log the serverless function response
                     console.log("Serverless function response:", this.responseText);
+                }else{
+                    console.log(this.status);
                 }
             };
             xhttp.open("POST", "https://securitee.azurewebsites.net/api/srvFunction?code=ma9q8GqIgDniQSR31BqVCUtQqkaF_JyaD7KxON7enzwJAzFuANgDxQ==", true); // Replace with the actual URL of your serverless function
