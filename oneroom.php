@@ -35,7 +35,6 @@ $stmt = $conn->prepare($sql);
 $stmt->bindParam(':roomNumber', $roomNumber);
 $stmt->execute();
 $room = $stmt->fetch(PDO::FETCH_ASSOC);
-
 // Output HTML content
 ?>
 <!DOCTYPE html>
