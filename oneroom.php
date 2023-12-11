@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reserve'])) {
         error_log("Enqueued message: " . $enqueuedMessage);
 
         // Call serverless function with roomNumber
-        callServerlessFunction($roomNumber);
+        //callServerlessFunction($roomNumber);
 
         // Return a success response
         header('Content-Type: application/json');
@@ -67,6 +67,20 @@ $room = $stmt->fetch(PDO::FETCH_ASSOC);
 
     <!-- JavaScript code to handle room reservation -->
     <script>
+        function callServerlessFunction(RoomNumber) {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    // Log the serverless function response
+                    console.log("Serverless function response:", this.responseText);
+                }else{
+                    console.log(this.status);
+                }
+            };
+            xhttp.open("POST", "https://securitee.azurewebsites.net/api/srvFunction?code=ma9q8GqIgDniQSR31BqVCUtQqkaF_JyaD7KxON7enzwJAzFuANgDxQ==", true);
+            xhttp.setRequestHeader("Content-type", "application/json");
+            xhttp.send(JSON.stringify({ roomNumber: RoomNumber }));
+        }
         // JavaScript function to handle room reservation
         function reserveRoom(RoomNumber) {
             var xhttp = new XMLHttpRequest();
@@ -84,23 +98,11 @@ $room = $stmt->fetch(PDO::FETCH_ASSOC);
             //xhttp.open("POST", "/oneroom.php?RoomNumber=" + RoomNumber, true);
             //xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
             //xhttp.send("reserve=true");
+            callServerlessFunction($roomNumber);
         }
 
         // JavaScript function to call the serverless function
-        function callServerlessFunction(RoomNumber) {
-            var xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-                    // Log the serverless function response
-                    console.log("Serverless function response:", this.responseText);
-                }else{
-                    console.log(this.status);
-                }
-            };
-            xhttp.open("POST", "https://securitee.azurewebsites.net/api/srvFunction?code=ma9q8GqIgDniQSR31BqVCUtQqkaF_JyaD7KxON7enzwJAzFuANgDxQ==", true);
-            xhttp.setRequestHeader("Content-type", "application/json");
-            xhttp.send(JSON.stringify({ roomNumber: RoomNumber }));
-        }
+        
     </script>
 
 </body>
