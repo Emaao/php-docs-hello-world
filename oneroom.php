@@ -107,11 +107,9 @@ $room = $stmt->fetch(PDO::FETCH_ASSOC);
     <script>
         // JavaScript function to handle room reservation
         function reserveRoom(RoomNumber) {
-            var requestUrl = baseUrl + "/oneroom.php?RoomNumber=" + RoomNumber;
-            console.log("Request URL:", requestUrl);
             // Make an AJAX request to update availability
             var xhttp = new XMLHttpRequest();
-            /*xhttp.onreadystatechange = function () {
+            xhttp.onreadystatechange = function () {
                 if (this.readyState == 4) {
                     if (this.status == 200) {
                         // Update the button text and disable the button
@@ -137,32 +135,7 @@ $room = $stmt->fetch(PDO::FETCH_ASSOC);
             xhttp.open("POST", "/oneroom.php?RoomNumber=" + RoomNumber, true);
             xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
             xhttp.send("reserve=true");
-        }*/
-            xhttp.onreadystatechange = function () {
-                if (this.readyState == 4) {
-                    if (this.status == 200) {
-                        // Update the button text and disable the button
-                        document.querySelector("button").innerText = "Room Reserved";
-                        document.querySelector("button").disabled = true;
-
-                        // Update the availability in the page
-                        document.getElementById("availability").innerText = "0";
-
-                        // Get idReservation from the response
-                        var response = JSON.parse(this.responseText);
-                        var idReservation = response.idResa;
-
-                        // Call serverless function with roomNumber and idReservation
-                        callServerlessFunction(RoomNumber, idReservation);
-                    } else {
-                        // Log an error if the request is not successful
-                        console.error("Error updating availability");
-                    }
-                }
-             };
-            xhttp.open("POST", requestUrl, true);
-            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            xhttp.send("reserve=true");
+        }
 
         // JavaScript function to call the serverless function
         function callServerlessFunction(RoomNumber, idReservation) {
