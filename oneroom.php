@@ -51,6 +51,9 @@ $room = $stmt->fetch(PDO::FETCH_ASSOC);
         <p>Room Number: <?php echo $room['RoomNumber']; ?></p>
         <p>Availability: <span id="availability"><?php echo $room['Availability']; ?></span></p>
 
+        <!-- Display the room image from Blob Storage -->
+        <img src="<?php echo $room['imagePath'] . '?si=imanee&spr=https&sv=2022-11-02&sr=c&sig=zZGbqUZMIy3SuTjwwfVIkt996nMuPTppsZXGJp5VD0Q%3D'; ?>" alt="Room Image">
+
         <!-- Reserve button and form -->
         <form id="reserveForm" method="post">
             <button type="button" onclick="reserveRoom(<?php echo $room['RoomNumber']; ?>)">Reserve Room</button>
