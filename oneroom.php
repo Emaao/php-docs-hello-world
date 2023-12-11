@@ -8,8 +8,21 @@ $roomNumber = $_GET['RoomNumber'];
 // Check if the form is submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reserve'])) {
     try {
-        // Generate a unique idReservation
-        $idReservation = uniqid();
+        // Fetch idReservation from the database based on idUser and RoomNumber
+        $sqlFetchIdReservation = "SELECT idResa FROM Resa WHERE idUser = :idUser AND RoomNumber = :roomNumber";
+        $stmtFetchIdReservation = $conn->prepare($sqlFetchIdReservation);
+        $stmtFetchIdReservation->bindParam(':idUser', $_SESSION['userId']); // Assuming you have a session variable for userId
+        $stmtFetchIdReservation->bindParam(':roomNumber', $roomNumber);
+        $stmtFetchIdReservation->execute();
+        $reservation = $stmtFetchIdReservation->fetch(PDO::FETCH_ASSOC);
+
+        // Check if idReservation is found
+        if (!$reservation) {
+            // Handle the case where no reservation is found
+            http_response_code(404);
+            echo json_encode(['error' => 'Reservation not found']);
+            exit();
+        }
 
         // Update the availability in the database
         $sqlUpdate = "UPDATE Salles SET Availability = 0 WHERE RoomNumber = :roomNumber";
@@ -24,25 +37,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reserve'])) {
         $stmt->execute();
         $room = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // Return updated availability and generated idReservation as a JSON response
+        // Return updated availability and idReservation as a JSON response
         header('Content-Type: application/json');
-        echo json_encode(['Availability' => $room['Availability'], 'idResa' => $idReservation]);
-
-        // URL to which the POST request will be sent
-        $url = 'https://securitee.azurewebsites.net/api/srvFunction?code=ma9q8GqIgDniQSR31BqVCUtQqkaF_JyaD7KxON7enzwJAzFuANgDxQ==';
-
-        // Data to be sent in the POST request
-        $data = array(
-            'RoomNumber' => $roomNumber,
-            'idResa' => $idReservation
-        );
-
-        // ... (rest of the cURL code remains unchanged)
+        echo json_encode(['Availability' => $room['Availability'], 'idResa' => $reservation['idResa']]);
+        exit(); // Ensure no further HTML content is sent
     } catch (PDOException $e) {
         // Log the error
         error_log("Error updating availability: " . $e->getMessage());
         // Return an error response if needed
         http_response_code(500);
+        echo json_encode(['error' => 'Internal Server Error']);
         exit();
     }
 }
@@ -53,8 +57,9 @@ $stmt = $conn->prepare($sql);
 $stmt->bindParam(':roomNumber', $roomNumber);
 $stmt->execute();
 $room = $stmt->fetch(PDO::FETCH_ASSOC);
-?>
 
+// Output HTML content
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -76,11 +81,11 @@ $room = $stmt->fetch(PDO::FETCH_ASSOC);
         <form id="reserveForm" method="post" onsubmit="reserveRoom(<?php echo $room['RoomNumber']; ?>)">
             <?php
             // Check if the room is available and user is not an admin
-                if ($room['Availability'] == 1 && $_SESSION['isAdmin'] != 1) {
-                    echo '<button type="submit" name="reserve">Reserve Room</button>';
-                } else {
-                    echo '<button type="button" disabled>Room Reserved</button>';
-                }
+            if ($room['Availability'] == 1 && $_SESSION['isAdmin'] != 1) {
+                echo '<button type="submit" name="reserve">Reserve Room</button>';
+            } else {
+                echo '<button type="button" disabled>Room Reserved</button>';
+            }
             ?>
         </form>
     </div>
