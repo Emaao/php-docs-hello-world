@@ -81,9 +81,9 @@ $room = $stmt->fetch(PDO::FETCH_ASSOC);
                     }
                 }
             };
-            xhttp.open("POST", "/oneroom.php?RoomNumber=" + RoomNumber, true);
-            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            xhttp.send("reserve=true");
+            //xhttp.open("POST", "/oneroom.php?RoomNumber=" + RoomNumber, true);
+            //xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            //xhttp.send("reserve=true");
         }
 
         // JavaScript function to call the serverless function
