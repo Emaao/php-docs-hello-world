@@ -154,7 +154,6 @@ $room = $stmt->fetch(PDO::FETCH_ASSOC);
 
 </body>
 </html>
-*/
 
 
 
