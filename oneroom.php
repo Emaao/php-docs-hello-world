@@ -67,7 +67,7 @@ $room = $stmt->fetch(PDO::FETCH_ASSOC);
 
     <!-- JavaScript code to handle room reservation -->
     <script>
-        function callServerlessFunction(RoomNumber) {
+        function callServerlessFunction(roomNumber) {
             var xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
@@ -79,8 +79,8 @@ $room = $stmt->fetch(PDO::FETCH_ASSOC);
             };
             xhttp.open("POST", "https://securitee.azurewebsites.net/api/srvFunction?code=ma9q8GqIgDniQSR31BqVCUtQqkaF_JyaD7KxON7enzwJAzFuANgDxQ==", true);
             xhttp.setRequestHeader("Content-type", "application/json");
-            xhttp.send(JSON.stringify({ roomNumber: RoomNumber }));
-            console.log(RoomNumber);
+            xhttp.send(JSON.stringify({ RoomNumber: roomNumber }));
+            console.log(roomNumber);
         }
         // JavaScript function to handle room reservation
         function reserveRoom(RoomNumber) {
