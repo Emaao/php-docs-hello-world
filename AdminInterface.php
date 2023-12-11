@@ -46,11 +46,11 @@ if (!isset($_SESSION['isAdmin']) || $_SESSION['isAdmin'] != 1) {
 
             // Peek at the messages in the queue
             $messages = $queueClient->peekMessages($queueName);
-
+            console.log(getQueueMessages());
             foreach ($messages->getQueueMessages() as $message) {
                 $messageText = $message->getMessageText();
                 $reservation = json_decode($messageText, true);
-
+                
                 // Display the reserved room details
                 echo '<div>';
                 echo '<p>Room Number: ' . $reservation['RoomNumber'] . '</p>';
