@@ -31,9 +31,44 @@ if (!isset($_SESSION['isAdmin']) || $_SESSION['isAdmin'] != 1) {
 
         <!-- PHP code to fetch and display reserved rooms from the Azure Storage Queue -->
         <?php
-        
+        fwrite(STDOUT, "Hello, World!\n");
         echo 'hello world';
-        
+        //require 'vendor/autoload.php'; // Include the Azure Storage Queue SDK
+
+        use MicrosoftAzure\Storage\Queue\QueueRestProxy;
+        use MicrosoftAzure\Storage\Common\ServiceException;
+
+        // Azure Storage Queue settings
+        $connectionString = 'DefaultEndpointsProtocol=https;AccountName=reservac;AccountKey=FFth1+WCTmbeujiIjwW6VnnPM8QowQ9UvJMcbI8Xn8X7oQ1yytzbOU2H+Qwvb4ipJgp5MrEN4mJc+AStF7w/XQ==;EndpointSuffix=core.windows.net'; // Replace with your Azure Storage connection string
+        $queueName = 'queue';
+
+        try {
+            // Create a connection to the Azure Storage Queue
+            $queueClient = QueueRestProxy::createQueueService($connectionString);
+
+            // Peek at the messages in the queue
+            $messages = $queueClient->peekMessages($queueName);
+            console.log(getQueueMessages());
+            console.log("hhhhh");
+            foreach ($messages->getQueueMessages() as $message) {
+                $messageText = $message->getMessageText();
+                $reservation = json_decode($messageText, true);
+                
+                // Display the reserved room details
+                echo '<div>';
+                echo '<p>Room Number: ' . $reservation['RoomNumber'] . '</p>';
+                echo '<p>Reserved by User</p>';
+                
+                // Affect button for each reserved room
+                echo '<button class="affectButton" data-roomNumber="' . $reservation['RoomNumber'] . '">Affect</button>';
+                
+                echo '</div>';
+            }
+        } catch (ServiceException $e) {
+            // Log and handle the exception if needed
+            error_log("Error fetching messages from Azure Storage Queue: " . $e->getMessage());
+            echo 'Error fetching reservations.';
+        }
         ?>
     </div>
 
