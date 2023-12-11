@@ -6,8 +6,8 @@ error_log("AdminInterface.php script started");
 if (!isset($_SESSION['isAdmin']) || $_SESSION['isAdmin'] != 1) {
     // Log an error if the admin session is not recognized
     error_log("Admin session not recognized");
-    
-    // Redirect to roomReser.php
+
+    // Redirect to roomReser.php or another appropriate page
     header("Location: roomReser.php");
     exit();
 }
@@ -21,6 +21,7 @@ if (!isset($_SESSION['isAdmin']) || $_SESSION['isAdmin'] != 1) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Room Interface</title>
     <link rel="stylesheet" href="body.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 </head>
 
 <body>
@@ -54,6 +55,10 @@ if (!isset($_SESSION['isAdmin']) || $_SESSION['isAdmin'] != 1) {
                 echo '<div>';
                 echo '<p>Room Number: ' . $reservation['RoomNumber'] . '</p>';
                 echo '<p>Reserved by User</p>';
+                
+                // Affect button for each reserved room
+                echo '<button class="affectButton" data-roomNumber="' . $reservation['RoomNumber'] . '">Affect</button>';
+                
                 echo '</div>';
             }
         } catch (ServiceException $e) {
@@ -63,6 +68,21 @@ if (!isset($_SESSION['isAdmin']) || $_SESSION['isAdmin'] != 1) {
         }
         ?>
     </div>
+
+    <!-- JavaScript code to handle room affecting -->
+    <script>
+        $(document).ready(function () {
+            // Handle click event for the "Affect" button
+            $('.affectButton').on('click', function () {
+                var roomNumber = $(this).data('roomNumber');
+                
+                // Make an AJAX request to adminAffect.php
+                $.post('adminAffect.php', { RoomNumber: roomNumber }, function (data) {
+                    alert(data); // Display the response (you can replace this with actual UI update logic)
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>
