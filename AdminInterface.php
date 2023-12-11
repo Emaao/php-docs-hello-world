@@ -32,6 +32,7 @@ if (!isset($_SESSION['isAdmin']) || $_SESSION['isAdmin'] != 1) {
         <!-- PHP code to fetch and display reserved rooms from the Azure Storage Queue -->
         <?php
         fwrite(STDOUT, "Hello, World!\n");
+        echo 'hello world';
         require 'vendor/autoload.php'; // Include the Azure Storage Queue SDK
 
         use MicrosoftAzure\Storage\Queue\QueueRestProxy;
