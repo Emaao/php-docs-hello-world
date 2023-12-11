@@ -1,5 +1,5 @@
 <?php
-include 'rooms.php';
+include 'db.php';
 error_log("oneroom.php script started"); // Log to the server error log
 
 // Get RoomNumber from the query parameters
@@ -40,6 +40,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reserve'])) {
             $stmt->bindParam(':roomNumber', $roomNumber);
             $stmt->execute();
             $room = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            // Log the enqueued message
+            $enqueuedMessage = json_encode(['RoomNumber' => $roomNumber, 'idResa' => $reservation['idResa']]);
+            error_log("Enqueued message: " . $enqueuedMessage);
 
             // Return updated availability and idReservation as a JSON response
             header('Content-Type: application/json');
@@ -87,7 +91,6 @@ $room = $stmt->fetch(PDO::FETCH_ASSOC);
         <!-- Display the room image from Blob Storage -->
         <img src="<?php echo $room['imagePath'] . '?si=imanee&spr=https&sv=2022-11-02&sr=c&sig=zZGbqUZMIy3SuTjwwfVIkt996nMuPTppsZXGJp5VD0Q%3D'; ?>" alt="Room Image">
 
-        <!-- Reserve button and form -->
         <!-- Reserve button and form -->
         <form id="reserveForm" method="post">
             <?php
