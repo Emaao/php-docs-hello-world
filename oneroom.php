@@ -11,10 +11,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reserve'])) {
         // Log to check if the reservation button is clicked
         error_log("Reserve button clicked for RoomNumber: $roomNumber");
 
+        // Update the availability in the database
+        $sqlUpdate = "UPDATE Salles SET Availability = 0 WHERE RoomNumber = :roomNumber";
+        $stmtUpdate = $conn->prepare($sqlUpdate);
+        $stmtUpdate->bindParam(':roomNumber', $roomNumber);
+        $stmtUpdate->execute();
+
         // For simplicity, let's just log a success message
         error_log("Room reserved successfully");
 
-        // You can add the room reservation logic here
+        // You can add additional reservation logic here
 
         // Respond with a success message
         echo json_encode(['message' => 'Room reserved successfully']);
@@ -77,6 +83,18 @@ $room = $stmt->fetch(PDO::FETCH_ASSOC);
 
             // Update the availability in the page (for demonstration purposes)
             document.getElementById("availability").innerText = "0";
+
+            // Make an additional AJAX request to update availability in the database
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    // Log the database update response
+                    console.log("Database update response:", this.responseText);
+                }
+            };
+            xhttp.open("POST", "/oneroom.php?RoomNumber=" + RoomNumber, true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.send("reserve=true");
         }
     </script>
 
