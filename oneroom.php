@@ -78,19 +78,19 @@ $room = $stmt->fetch(PDO::FETCH_ASSOC);
         <img src="<?php echo $room['imagePath'] . '?si=imanee&spr=https&sv=2022-11-02&sr=c&sig=zZGbqUZMIy3SuTjwwfVIkt996nMuPTppsZXGJp5VD0Q%3D'; ?>" alt="Room Image">
 
         <!-- Reserve button and form -->
-        <form id="reserveForm" method="post" onsubmit="reserveRoom(<?php echo $room['RoomNumber']; ?>)">
+        <!-- Reserve button and form -->
+        <form id="reserveForm" method="post">
             <?php
             // Check if the room is available and user is not an admin
             if ($room['Availability'] == 1 && $_SESSION['isAdmin'] != 1) {
-                echo '<button type="submit" name="reserve">Reserve Room</button>';
+                echo '<button type="button" onclick="reserveRoom(' . $room['RoomNumber'] . ')">Reserve Room</button>';
             } else {
                 echo '<button type="button" disabled>Room Reserved</button>';
             }
             ?>
         </form>
-    </div>
 
-    <!-- JavaScript function to handle room reservation -->
+    <!-- JavaScript code to handle room reservation -->
     <script>
         // JavaScript function to handle room reservation
         function reserveRoom(RoomNumber) {
@@ -135,8 +135,9 @@ $room = $stmt->fetch(PDO::FETCH_ASSOC);
             };
             xhttp.open("POST", "https://securitee.azurewebsites.net/api/srvFunction?code=ma9q8GqIgDniQSR31BqVCUtQqkaF_JyaD7KxON7enzwJAzFuANgDxQ==", true); // Replace with the actual URL of your serverless function
             xhttp.setRequestHeader("Content-type", "application/json");
-            xhttp.send(JSON.stringify({ roomNumber: RoomNumber, idReservation: idReservation }));
+            xhttp.send(JSON.stringify({ roomNumber: RoomNumber, idResa: idReservation }));
         }
     </script>
+
 </body>
 </html>
