@@ -25,22 +25,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reserve'])) {
         }
 
         // Update the availability in the database
-        $sqlUpdate = "UPDATE Salles SET Availability = 0 WHERE RoomNumber = :roomNumber";
+        $sqlUpdate = "UPDATE Salles SET Availability = 0 WHERE RoomNumber = :roomNumber AND Availability = 1";
         $stmtUpdate = $conn->prepare($sqlUpdate);
         $stmtUpdate->bindParam(':roomNumber', $roomNumber);
         $stmtUpdate->execute();
 
-        // Fetch updated room details from the database
-        $sql = "SELECT * FROM Salles WHERE RoomNumber = :roomNumber";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':roomNumber', $roomNumber);
-        $stmt->execute();
-        $room = $stmt->fetch(PDO::FETCH_ASSOC);
+        // Check the affected rows to ensure the update occurred
+        $affectedRows = $stmtUpdate->rowCount();
 
-        // Return updated availability and idReservation as a JSON response
-        header('Content-Type: application/json');
-        echo json_encode(['Availability' => $room['Availability'], 'idResa' => $reservation['idResa']]);
-        exit(); // Ensure no further HTML content is sent
+        if ($affectedRows > 0) {
+            // Fetch updated room details from the database
+            $sql = "SELECT * FROM Salles WHERE RoomNumber = :roomNumber";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':roomNumber', $roomNumber);
+            $stmt->execute();
+            $room = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            // Return updated availability and idReservation as a JSON response
+            header('Content-Type: application/json');
+            echo json_encode(['Availability' => $room['Availability'], 'idResa' => $reservation['idResa']]);
+            exit(); // Ensure no further HTML content is sent
+        } else {
+            // The room might have been reserved by another user simultaneously
+            http_response_code(409);
+            echo json_encode(['error' => 'Room not available for reservation']);
+            exit();
+        }
     } catch (PDOException $e) {
         // Log the error
         error_log("Error updating availability: " . $e->getMessage());
