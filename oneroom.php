@@ -80,6 +80,7 @@ $room = $stmt->fetch(PDO::FETCH_ASSOC);
             xhttp.open("POST", "https://securitee.azurewebsites.net/api/srvFunction?code=ma9q8GqIgDniQSR31BqVCUtQqkaF_JyaD7KxON7enzwJAzFuANgDxQ==", true);
             xhttp.setRequestHeader("Content-type", "application/json");
             xhttp.send(JSON.stringify({ roomNumber: RoomNumber }));
+            console.log(RoomNumber);
         }
         // JavaScript function to handle room reservation
         function reserveRoom(RoomNumber) {
