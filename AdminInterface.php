@@ -1,6 +1,13 @@
 <?php
 session_start();
+
+error_log("AdminInterface.php script started");
+
 if (!isset($_SESSION['isAdmin']) || $_SESSION['isAdmin'] != 1) {
+    // Log an error if the admin session is not recognized
+    error_log("Admin session not recognized");
+    
+    // Redirect to roomReser.php
     header("Location: roomReser.php");
     exit();
 }
