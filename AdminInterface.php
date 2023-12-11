@@ -1,7 +1,6 @@
 <?php
 session_start();
 include 'db.php';
-
 error_log("AdminInterface.php script started");
 
 if (!isset($_SESSION['isAdmin']) || $_SESSION['isAdmin'] != 1) {
