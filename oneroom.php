@@ -8,21 +8,20 @@ $roomNumber = $_GET['RoomNumber'];
 // Check if the form is submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reserve'])) {
     try {
-        // Log the enqueued message
-        $enqueuedMessage = json_encode(['RoomNumber' => $roomNumber]);
-        error_log("Enqueued message: " . $enqueuedMessage);
+        // Log to check if the reservation button is clicked
+        error_log("Reserve button clicked for RoomNumber: $roomNumber");
 
-        // Call serverless function with roomNumber
-        callServerlessFunction($roomNumber);
+        // For simplicity, let's just log a success message
+        error_log("Room reserved successfully");
 
-        // Return a success response
-        header('Content-Type: application/json');
-        echo json_encode(['message' => 'Room reservation request received successfully']);
+        // You can add the room reservation logic here
+
+        // Respond with a success message
+        echo json_encode(['message' => 'Room reserved successfully']);
         exit();
     } catch (Exception $e) {
-        // Log the error
-        error_log("Error processing reservation: " . $e->getMessage());
-        // Return an error response if needed
+        // Log any errors
+        error_log("Error reserving room: " . $e->getMessage());
         http_response_code(500);
         echo json_encode(['error' => 'Internal Server Error']);
         exit();
@@ -35,6 +34,7 @@ $stmt = $conn->prepare($sql);
 $stmt->bindParam(':roomNumber', $roomNumber);
 $stmt->execute();
 $room = $stmt->fetch(PDO::FETCH_ASSOC);
+
 // Output HTML content
 ?>
 <!DOCTYPE html>
@@ -51,53 +51,29 @@ $room = $stmt->fetch(PDO::FETCH_ASSOC);
         <p>Room Number: <?php echo $room['RoomNumber']; ?></p>
         <p>Availability: <span id="availability"><?php echo $room['Availability']; ?></span></p>
 
-        <!-- Display the room image from Blob Storage -->
-        <img src="<?php echo $room['imagePath'] . '?si=imanee&spr=https&sv=2022-11-02&sr=c&sig=zZGbqUZMIy3SuTjwwfVIkt996nMuPTppsZXGJp5VD0Q%3D'; ?>" alt="Room Image">
-
         <!-- Reserve button and form -->
         <form id="reserveForm" method="post">
-            <?php
-            if ($room['Availability'] == 1 && $_SESSION['isAdmin'] != 1) {
-                echo '<button type="button" onclick="reserveRoom(' . $room['RoomNumber'] . ')">Reserve Room</button>';
-            } else {
-                echo '<button type="button" disabled>Room Reserved</button>';
-            }
-            ?>
+            <button type="button" onclick="reserveRoom(<?php echo $room['RoomNumber']; ?>)">Reserve Room</button>
         </form>
 
     <!-- JavaScript code to handle room reservation -->
     <script>
         // JavaScript function to handle room reservation
         function reserveRoom(RoomNumber) {
-            var xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function () {
-                if (this.readyState == 4) {
-                    if (this.status == 200) {
-                        // Log the serverless function response
-                        console.log("Serverless function response:", this.responseText);
-                    } else {
-                        // Log an error if the request is not successful
-                        console.error("Error updating availability");
-                    }
-                }
-            };
-            xhttp.open("POST", "/oneroom.php?RoomNumber=" + RoomNumber, true);
-            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            xhttp.send("reserve=true");
-        }
+            // Log to check if the reserveRoom function is called
+            console.log("Reserve Room function called for RoomNumber:", RoomNumber);
 
-        // JavaScript function to call the serverless function
-        function callServerlessFunction(RoomNumber) {
-            var xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-                    // Log the serverless function response
-                    console.log("Serverless function response:", this.responseText);
-                }
-            };
-            xhttp.open("POST", "https://securitee.azurewebsites.net/api/srvFunction?code=ma9q8GqIgDniQSR31BqVCUtQqkaF_JyaD7KxON7enzwJAzFuANgDxQ==", true);
-            xhttp.setRequestHeader("Content-type", "application/json");
-            xhttp.send(JSON.stringify({ roomNumber: RoomNumber }));
+            // Make an AJAX request to simulate the room reservation
+            // In a real scenario, you'd send the reservation to your serverless function or backend
+            // For now, we're logging a success message
+            console.log("Room reserved successfully");
+
+            // Update the button text and disable the button
+            document.querySelector("button").innerText = "Room Reserved";
+            document.querySelector("button").disabled = true;
+
+            // Update the availability in the page (for demonstration purposes)
+            document.getElementById("availability").innerText = "0";
         }
     </script>
 
