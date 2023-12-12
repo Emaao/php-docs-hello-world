@@ -1,0 +1,17 @@
+{
+    "name": "lenovo/php-docs-hello-world",
+    "autoload": {
+        "psr-4": {
+            "Lenovo\\PhpDocsHelloWorld\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Emaao",
+            "email": "azizimane953@gmail.com"
+        }
+    ],
+    "require": {
+        "microsoft/azure-storage-queue": "^1.3"
+    }
+}
