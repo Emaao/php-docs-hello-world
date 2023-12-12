@@ -78,9 +78,25 @@ if (!isset($_SESSION['isAdmin']) || $_SESSION['isAdmin'] != 1) {
                 var roomNumber = $(this).data('roomNumber');
                 
                 // Make an AJAX request to adminAffect.php
-                $.post('adminAffect.php', { RoomNumber: roomNumber }, function (data) {
-                    alert(data); // Display the response (you can replace this with actual UI update logic)
-                });
+                // Get RoomNumber from the form submission
+
+// Update the availability in the database
+// Assuming you have a database connection in db.php
+include 'db.php';
+
+$sqlUpdate = "UPDATE Salles SET Availability = 0 WHERE RoomNumber = :roomNumber";
+$stmtUpdate = $conn->prepare($sqlUpdate);
+$stmtUpdate->bindParam(':roomNumber', $roomNumber);
+$stmtUpdate->execute();
+
+// Check the affected rows to ensure the update occurred
+$affectedRows = $stmtUpdate->rowCount();
+
+if ($affectedRows > 0) {
+    echo 'Room availability updated successfully.';
+} else {
+    echo 'Failed to update room availability.';
+}
             });
         });
     </script>

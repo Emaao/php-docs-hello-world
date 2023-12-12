@@ -12,8 +12,7 @@ if (!isset($_SESSION['isAdmin']) || $_SESSION['isAdmin'] != 1) {
     header("Location: roomReser.php");
     exit();
 }
-echo $_POST['RoomNumber'];
-echo $_SERVER['REQUEST_METHOD'];
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['RoomNumber'])) {
     try {
         // Get RoomNumber from the form submission
