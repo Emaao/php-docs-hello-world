@@ -31,6 +31,7 @@ if (!isset($_SESSION['isAdmin']) || $_SESSION['isAdmin'] != 1) {
 
         <!-- PHP code to fetch and display reserved rooms from the Azure Storage Queue -->
         <?php
+        echo 'hello world';
         require 'vendor/autoload.php'; // Include the Azure Storage Queue SDK
 
         use MicrosoftAzure\Storage\Queue\QueueRestProxy;
@@ -54,6 +55,7 @@ if (!isset($_SESSION['isAdmin']) || $_SESSION['isAdmin'] != 1) {
                 // Display the reserved room details
                 echo '<div>';
                 echo '<p>Room Number: ' . $reservation['RoomNumber'] . '</p>';
+
                 
                 // Affect button for each reserved room
                 echo '<button class="affectButton" data-roomNumber="' . $reservation['RoomNumber'] . '">Affect</button>';
@@ -73,16 +75,12 @@ if (!isset($_SESSION['isAdmin']) || $_SESSION['isAdmin'] != 1) {
         $(document).ready(function () {
             // Handle click event for the "Affect" button
             $('.affectButton').on('click', function () {
-                var roomNumber = $(this).data('RoomNumber');
+                var roomNumber = $(this).data('roomNumber');
                 
                 // Make an AJAX request to adminAffect.php
-                //$.post('adminAffect.php', { RoomNumber: roomNumber }, function (data) {
-                  //  alert(data); // Display the response (you can replace this with actual UI update logic)
-                //});
-                $.post('adminAffect.php', { RoomNumber: roomNumber, affectButton: true }, function (data) {
-                    alert(data);
+                $.post('adminAffect.php', { RoomNumber: roomNumber }, function (data) {
+                    alert(data); // Display the response (you can replace this with actual UI update logic)
                 });
-
             });
         });
     </script>
