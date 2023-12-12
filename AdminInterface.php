@@ -73,7 +73,7 @@ if (!isset($_SESSION['isAdmin']) || $_SESSION['isAdmin'] != 1) {
         $(document).ready(function () {
             // Handle click event for the "Affect" button
             $('.affectButton').on('click', function () {
-                var roomNumber = $(this).data('roomNumber');
+                var roomNumber = $(this).data('RoomNumber');
                 
                 // Make an AJAX request to adminAffect.php
                 //$.post('adminAffect.php', { RoomNumber: roomNumber }, function (data) {
