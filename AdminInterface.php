@@ -57,7 +57,7 @@ if (!isset($_SESSION['isAdmin']) || $_SESSION['isAdmin'] != 1) {
 
                 
                 // Affect button for each reserved room
-                echo '<button class="affectButton" data-roomNumber="' . $reservation['RoomNumber'] . '">Affect</button>';
+                //echo '<button class="affectButton" data-roomNumber="' . $reservation['RoomNumber'] . '">Affect</button>';
                 
                 echo '</div>';
             }
