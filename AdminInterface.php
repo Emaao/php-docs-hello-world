@@ -76,9 +76,13 @@ if (!isset($_SESSION['isAdmin']) || $_SESSION['isAdmin'] != 1) {
                 var roomNumber = $(this).data('roomNumber');
                 
                 // Make an AJAX request to adminAffect.php
-                $.post('adminAffect.php', { RoomNumber: roomNumber }, function (data) {
-                    alert(data); // Display the response (you can replace this with actual UI update logic)
+                //$.post('adminAffect.php', { RoomNumber: roomNumber }, function (data) {
+                  //  alert(data); // Display the response (you can replace this with actual UI update logic)
+                //});
+                $.post('adminAffect.php', { RoomNumber: roomNumber, affectButton: true }, function (data) {
+                    alert(data);
                 });
+
             });
         });
     </script>
