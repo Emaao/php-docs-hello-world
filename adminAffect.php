@@ -13,7 +13,7 @@ if (!isset($_SESSION['isAdmin']) || $_SESSION['isAdmin'] != 1) {
     exit();
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['affectButton'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['RoomNumber'])) {
     try {
         // Get RoomNumber from the form submission
         $roomNumber = $_POST['RoomNumber'];
