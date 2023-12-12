@@ -13,7 +13,7 @@ if (!isset($_SESSION['isAdmin']) || $_SESSION['isAdmin'] != 1) {
     exit();
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['affectRoom'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['affectButton'])) {
     try {
         // Get RoomNumber from the form submission
         $roomNumber = $_POST['RoomNumber'];
@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['affectRoom'])) {
         // Assuming you have a database connection in db.php
         include 'db.php';
 
-        $sqlUpdate = "UPDATE Salles SET Availability = 1 WHERE RoomNumber = :roomNumber";
+        $sqlUpdate = "UPDATE Salles SET Availability = 0 WHERE RoomNumber = :roomNumber";
         $stmtUpdate = $conn->prepare($sqlUpdate);
         $stmtUpdate->bindParam(':roomNumber', $roomNumber);
         $stmtUpdate->execute();
